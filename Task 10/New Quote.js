@@ -1,11 +1,3 @@
-const quotes = [
-  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
-  { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
-  { text: "Success is not final, failure is not fatal.", author: "Winston Churchill" },
-  { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-];
-
 const quoteText = document.createElement("p");
 const quoteAuthor = document.createElement("p");
 const newQuoteButton = document.createElement("button");
@@ -15,11 +7,22 @@ document.body.appendChild(quoteText);
 document.body.appendChild(quoteAuthor);
 document.body.appendChild(newQuoteButton);
 
-function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[randomIndex];
-  quoteText.textContent = `"${quote.text}"`;
-  quoteAuthor.textContent = `— ${quote.author}`;
+async function showRandomQuote() {
+  newQuoteButton.disabled = true;
+  quoteText.textContent = "Loading...";
+  quoteAuthor.textContent = "";
+
+  try {
+    const response = await fetch("https://dummyjson.com/quotes/random");
+    const quote = await response.json();
+    quoteText.textContent = `"${quote.quote}"`;
+    quoteAuthor.textContent = `— ${quote.author}`;
+  } catch (error) {
+    quoteText.textContent = "Failed to load quote. Please try again.";
+    quoteAuthor.textContent = "";
+  } finally {
+    newQuoteButton.disabled = false;
+  }
 }
 
 newQuoteButton.addEventListener("click", showRandomQuote);
